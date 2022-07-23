@@ -1,24 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
+import MainPage from "./components/Main-Page";
+import {useAuth0} from "@auth0/auth0-react";
+import Login from "./components/Login";
+import {useEffect} from "react";
+import LogsPage from "./components/Logs-Page";
 
 function App() {
+    const { isAuthenticated, isLoading } = useAuth0()
+
+    useEffect(() => {
+        console.log(isAuthenticated)
+    }, [])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <Router>
+        <Routes>
+            {isAuthenticated &&
+                <React.Fragment>
+                    <Route exact path="/" element={<MainPage />} />
+                    <Route exact path="/logs" element={<LogsPage />} />
+                </React.Fragment>
+            }
+            {!isAuthenticated && !isLoading &&
+                <Route path="/" element={<Login />} />
+            }
+        </Routes>
+      </Router>
   );
 }
 
