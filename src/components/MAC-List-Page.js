@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -46,29 +46,104 @@ const style = {
 };
 
 function Row(props){
-    return (<StyledTableRow key={props.key}>
-        <StyledTableCell component="th" scope="row">
-            {props.name}
-        </StyledTableCell>
-        <StyledTableCell component="th" scope="row">
-            {props.mac}
-        </StyledTableCell>
-        <StyledTableCell component="th" scope="row">
-            <IconButton size="small">
-                <FontAwesomeIcon size="sm" icon={faEdit} onClick={() => {alert("edit")}} />
-            </IconButton>
-            <IconButton size="small">
-                <FontAwesomeIcon size="sm"  icon={faTrash} onClick={() => {alert("Trash")}} />
-            </IconButton>
-        </StyledTableCell>
-    </StyledTableRow>
+    return (<StyledTableRow key={props.id}>
+            <StyledTableCell component="th" scope="row">
+                {props.name}
+            </StyledTableCell>
+            <StyledTableCell component="th" scope="row">
+                {props.mac}
+            </StyledTableCell>
+            <StyledTableCell component="th" scope="row">
+                <IconButton size="small" onClick={props.handleEdit}>
+                    <FontAwesomeIcon size="sm" icon={faEdit} />
+                </IconButton>
+                <IconButton size="small" onClick={props.handleDelete}>
+                    <FontAwesomeIcon size="sm"  icon={faTrash} />
+                </IconButton>
+            </StyledTableCell>
+        </StyledTableRow>
     )
 }
 
 function MacListPage(props) {
     const [open, setOpen] = React.useState(false);
+    const [editing, setEditing] = React.useState(false);
+    const [allowedMacs, setAllowedMacs] = React.useState([]);
+    const [nameValue, setNameValue] = React.useState("");
+    const [macValue, setMacValue] = React.useState("");
+    const [nameCheck, setNameCheck] = React.useState(false);
+    const [macCheck, setMacCheck] = React.useState(false);
     const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+        setOpen(false);
+        setEditing(false)
+        setNameValue("");
+        setMacValue("");
+    }
+
+    const handleDelete = (mac) => {
+        fetch(`${process.env.REACT_APP_REST_URL}/users/${mac}`, {
+            method: 'DELETE',
+        }).then(res => {
+            return res.json()
+        }).then(data=>setAllowedMacs(data))
+    }
+
+    const handleEdit = (name, address) => {
+        setNameValue(name);
+        setMacValue(address);
+        setOpen(true);
+        setEditing(address);
+    }
+
+    const handleRegex = (event, reverse) => {
+        const checkRegex = new RegExp("([\\w|\\d]{2}:){5}([\\w|\\d]{2})", "g");
+        const value = event.target.value;
+        if(reverse){
+            setNameCheck(!checkRegex.test(value))
+        }else{
+            setMacCheck(checkRegex.test(value))
+        }
+    }
+
+    const handleChange = (event, setter) => {
+        setter(event.target.value)
+    }
+
+    const handleSubmit = () => {
+        if(nameCheck && macCheck){
+            const checkIfIn = allowedMacs.filter((el) => el.address === macValue)
+            if(checkIfIn.length === 0){
+                const data = {
+                    name: nameValue,
+                    address: macValue
+                }
+                fetch(`${process.env.REACT_APP_REST_URL}/users/${editing ? `/${editing}`:''}`, {
+                    method: editing ? 'PUT' : 'POST',
+                    body: JSON.stringify(data),
+                    headers: {"Content-Type": "application/json"},
+                }).then(res => res.json()).then(data=>setAllowedMacs(data))
+                handleClose()
+            }else{
+                alert(`Adres MAC istnieje już w bazie`)
+            }
+        }else{
+            alert(`Zjebałeś: ${nameCheck} | ${macCheck}` )
+        }
+    }
+
+    useEffect(() =>{
+        if(allowedMacs.length === 0){
+            fetch(`${process.env.REACT_APP_REST_URL}/users`, {
+                method: 'GET',
+                headers: {"Content-Type": "application/json"},
+            }).then(res => {
+                return res.json()
+            })
+                .then(data=>setAllowedMacs(data))
+        }
+    }, [allowedMacs])
+
     return (<React.Fragment><TableContainer component={Paper}>
             <Table sx={{ minWidth: 700 }} aria-label="customized table">
                 <TableHead>
@@ -79,11 +154,9 @@ function MacListPage(props) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    <Row key="test" name="JA" mac="TEST" />
-                    <Row key="test1" name="JA" mac="TEST" />
-                    <Row key="test2" name="JA" mac="TEST" />
-                    <Row key="test3" name="JA" mac="TEST" />
-                    <Row key="test4" name="JA" mac="TEST" />
+                    {allowedMacs?.map((row, index) => {
+                        return (<Row key={`addres-row-${index}`} id={`addres-${index}`} name={row.name} mac={row.address} handleEdit={() => handleEdit(row.name, row.address)} handleDelete={() => handleDelete(row.address)}/>)
+                    })}
                 </TableBody>
             </Table>
         </TableContainer>
@@ -104,10 +177,10 @@ function MacListPage(props) {
                         Podaj wymagane dane
                     </Typography>
                     <br></br>
-                    <TextField label="Nazwa użytkownika" color="secondary" focused />
-                    <TextField sx={{marginLeft: "25px"}} label="MAC-Adres" color="secondary" focused />
+                    <TextField label="Nazwa użytkownika" value={nameValue} color="secondary" focused onBlur={(event) => handleRegex(event, true)} onChange={(event) => handleChange(event, setNameValue)} />
+                    <TextField sx={{marginLeft: "25px"}} label="MAC-Adres" value={macValue} color="secondary" onBlur={handleRegex} onChange={(event) => handleChange(event, setMacValue)} />
                     <br></br>
-                    <Button sx={{margin: "15px", float: "right"}} onClick={handleClose} variant="contained">Dodaj</Button>
+                    <Button sx={{margin: "15px", float: "right"}} onClick={handleSubmit} variant="contained">Dodaj</Button>
                 </Box>
             </Modal>
     </React.Fragment>

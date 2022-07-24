@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -31,72 +31,49 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 function LogsPage(props) {
+    const [logsArray, setLogsArray] = React.useState([])
+
+    useEffect(() =>{
+        if(logsArray.length === 0){
+            fetch(`${process.env.REACT_APP_REST_URL}/logs`, {
+                method: 'GET',
+                headers: {"Content-Type": "application/json"},
+            }).then(res => {
+                return res.json()
+            })
+                .then(data=>setLogsArray(data))
+        }
+    }, [logsArray])
+
     return (
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 700 }} aria-label="customized table">
                 <TableHead>
                     <TableRow>
                         <StyledTableCell>Wydający polecenie</StyledTableCell>
+                        <StyledTableCell>Typ</StyledTableCell>
                         <StyledTableCell>MAC Adres</StyledTableCell>
                         <StyledTableCell>Godzina</StyledTableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    <StyledTableRow key="test">
-                        <StyledTableCell component="th" scope="row">
-                            JA
-                        </StyledTableCell>
-                        <StyledTableCell component="th" scope="row">
-                            TEST
-                        </StyledTableCell>
-                        <StyledTableCell component="th" scope="row">
-                            Teraz
-                        </StyledTableCell>
-                    </StyledTableRow>
-                    <StyledTableRow key="test1">
-                        <StyledTableCell component="th" scope="row">
-                            JA
-                        </StyledTableCell>
-                        <StyledTableCell component="th" scope="row">
-                            TEST
-                        </StyledTableCell>
-                        <StyledTableCell component="th" scope="row">
-                            Teraz
-                        </StyledTableCell>
-                    </StyledTableRow>
-                    <StyledTableRow key="test2">
-                        <StyledTableCell component="th" scope="row">
-                            JA
-                        </StyledTableCell>
-                        <StyledTableCell component="th" scope="row">
-                            TEST
-                        </StyledTableCell>
-                        <StyledTableCell component="th" scope="row">
-                            Teraz
-                        </StyledTableCell>
-                    </StyledTableRow>
-                    <StyledTableRow key="test3">
-                        <StyledTableCell component="th" scope="row">
-                            JA
-                        </StyledTableCell>
-                        <StyledTableCell component="th" scope="row">
-                            TEST
-                        </StyledTableCell>
-                        <StyledTableCell component="th" scope="row">
-                            Teraz
-                        </StyledTableCell>
-                    </StyledTableRow>
-                    <StyledTableRow key="test4">
-                        <StyledTableCell component="th" scope="row">
-                            JA
-                        </StyledTableCell>
-                        <StyledTableCell component="th" scope="row">
-                            TEST
-                        </StyledTableCell>
-                        <StyledTableCell component="th" scope="row">
-                            Teraz
-                        </StyledTableCell>
-                    </StyledTableRow>
+                    {logsArray?.map((row, index) => {
+                        return (
+                            <StyledTableRow key={`log-row-${index}`}>
+                                <StyledTableCell component="th" scope="row">
+                                    {row.name}
+                                </StyledTableCell>
+                                <StyledTableCell component="th" scope="row">
+                                    {row.type}
+                                </StyledTableCell>
+                                <StyledTableCell component="th" scope="row">
+                                    {row.address}
+                                </StyledTableCell>
+                                <StyledTableCell component="th" scope="row">
+                                    {row.date}
+                                </StyledTableCell>
+                            </StyledTableRow>)
+                    })}
                 </TableBody>
             </Table>
         </TableContainer>

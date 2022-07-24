@@ -9,9 +9,6 @@ import LogsPage from "./components/Logs-Page";
 function App() {
     const { isAuthenticated, isLoading } = useAuth0()
 
-    useEffect(() => {
-        console.log(isAuthenticated)
-    }, [])
   return (
       <Router>
         <Routes>
