@@ -51,7 +51,7 @@ function LogsPage(props) {
 				<TableHead>
 					<TableRow>
 						<StyledTableCell>Wydający polecenie</StyledTableCell>
-						<StyledTableCell>Typ</StyledTableCell>
+						<StyledTableCell>Opis</StyledTableCell>
 						<StyledTableCell>MAC Adres</StyledTableCell>
 						<StyledTableCell>Godzina</StyledTableCell>
 					</TableRow>
@@ -64,7 +64,7 @@ function LogsPage(props) {
 									{row.name}
 								</StyledTableCell>
 								<StyledTableCell component="th" scope="row">
-									{row.type}
+									Użytkownik otworzył {row.type === "front" ? "przednią" : "tylną"} brame
 								</StyledTableCell>
 								<StyledTableCell component="th" scope="row">
 									{row.address}
