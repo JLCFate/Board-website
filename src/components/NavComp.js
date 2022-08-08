@@ -2,10 +2,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Tooltip, Box, Grid } from "@mui/material";
 import { faList, faMobileScreenButton, faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 import React from "react";
 
 export default function NavComp(props) {
 	const navigate = useNavigate();
+	const { logout } = useAuth0();
 
 	const OptionButton = (props) => {
 		const handle = props.onClick ?? (() => navigate(props.target));
@@ -60,10 +62,10 @@ export default function NavComp(props) {
 					</Grid>
 				</Box>
 				<Box sx={{ width: "100%", marginTop: "auto", marginBottom: "15px" }}>
-					<OptionButton title={"Wyloguj"} icon={faArrowRightFromBracket} onClick={() => alert("Logout")} />
+					<OptionButton title={"Wyloguj"} icon={faArrowRightFromBracket} onClick={() => logout()} />
 				</Box>
 			</Grid>
-			<Grid item xs={11} style={{ margin: "15px", marginLeft: "auto", marginRight: "auto", minWidth: "1060px" }}>
+			<Grid item xs={11} style={{ margin: "15px", marginLeft: "auto", marginRight: "auto", minWidth: "1060px", zIndex: 2 }}>
 				{props.children}
 			</Grid>
 		</Grid>

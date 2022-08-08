@@ -10,16 +10,11 @@ export default function EditModal(props) {
 		if (nameValue === name && tokenValue === address) onClose();
 	};
 
-	const handleChange = (event, setter) => {
-		setter(event.target.value);
-	};
+	const handleChange = (event, setter) => setter(event.target.value);
 
 	const handleSubmit = () => {
 		if (nameValue !== "" && tokenValue !== "") {
-			const data = {
-				name: nameValue,
-				address: tokenValue,
-			};
+			const data = { name: nameValue, address: tokenValue };
 			fetch(`${process.env.REACT_APP_REST_URL}/users/${address}`, {
 				method: "PUT",
 				body: JSON.stringify(data),
