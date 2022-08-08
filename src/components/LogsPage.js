@@ -40,7 +40,7 @@ export default function LogsPage() {
 						</TableRow>
 					</TableHead>
 					<TableBody sx={{ backgroundColor: "#255957" }}>
-						{rows && rows?.map((el) => (
+						{rows !== null && rows?.map((el) => (
 							<Row key={`user-${rows.indexOf(el)}`} row={el} />
 						))}
 					</TableBody>
