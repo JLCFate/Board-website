@@ -4,11 +4,11 @@ import { LogRow as Row } from "./LogRow";
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
 
 export default function LogsPage() {
-	const [rows, setRows] = React.useState([]);
+	const [rows, setRows] = React.useState(null);
 
 	useEffect(() => {
 		document.title = "Dziennik zdarzeń | JLC Gate";
-		if (rows.length === 0) {
+		if (rows.length === null) {
 			fetch(`${process.env.REACT_APP_REST_URL}/logs`, {
 				method: "GET",
 				headers: { "Content-Type": "application/json" },
