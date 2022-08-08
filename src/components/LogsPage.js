@@ -8,7 +8,7 @@ export default function LogsPage() {
 
 	useEffect(() => {
 		document.title = "Dziennik zdarzeń | JLC Gate";
-		if (rows.length === null) {
+		if (rows === null) {
 			fetch(`${process.env.REACT_APP_REST_URL}/logs`, {
 				method: "GET",
 				headers: { "Content-Type": "application/json" },
@@ -40,7 +40,7 @@ export default function LogsPage() {
 						</TableRow>
 					</TableHead>
 					<TableBody sx={{ backgroundColor: "#255957" }}>
-						{rows !== null && rows?.map((el) => (
+						{rows?.map((el) => (
 							<Row key={`user-${rows.indexOf(el)}`} row={el} />
 						))}
 					</TableBody>
