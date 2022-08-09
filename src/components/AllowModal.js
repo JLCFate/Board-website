@@ -12,7 +12,7 @@ export default function AllowModal(props) {
 		fetch(`${process.env.REACT_APP_REST_URL}/users/authenticate/${address}`, {
 			method: "PUT",
 			body: JSON.stringify(data),
-			headers: { "Content-Type": "application/json" },
+			headers: { "Content-Type": "application/json", "X-Address": process.env.REACT_APP_DEV_TOKEN },
 		})
 			.then((res) => res.json())
 			.then((data) => onClose(data));

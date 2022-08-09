@@ -55,11 +55,9 @@ export default function NavComp(props) {
 					flexWrap: "wrap",
 				}}
 			>
-				<Box>
-					<Grid container>
-						<OptionButton title={"Lista zapisanych tokenów"} icon={faMobileScreenButton} target={"/"} disabled={"t"} />
-						<OptionButton title={"Dziennik zdarzeń"} icon={faList} target={"/logs"} disabled={"b"} />
-					</Grid>
+				<Box sx={{ width: "100%" }}>
+					<OptionButton title={"Lista zapisanych tokenów"} icon={faMobileScreenButton} target={"/"} disabled={"t"} />
+					<OptionButton title={"Dziennik zdarzeń"} icon={faList} target={"/logs"} disabled={"b"} />
 				</Box>
 				<Box sx={{ width: "100%", marginTop: "auto", marginBottom: "15px" }}>
 					<OptionButton title={"Wyloguj"} icon={faArrowRightFromBracket} onClick={() => logout()} />
