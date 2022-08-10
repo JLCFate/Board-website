@@ -49,8 +49,10 @@ export default function InfoPage() {
 		setNameValue("");
 		setMacValue("");
 		setModalType(null);
-		setRows(data);
-		setShowRows(showDenied ? data : data.filter((e) => e.authorized || e.awaiting));
+		if (data !== undefined) {
+			setRows(data);
+			setShowRows(showDenied ? data : data.filter((e) => e.authorized || e.awaiting));
+		}
 	};
 
 	useEffect(() => {
