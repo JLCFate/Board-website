@@ -41,9 +41,11 @@ export default function LogsPage() {
 							</TableRow>
 						</TableHead>
 						<TableBody sx={{ backgroundColor: "#255957" }}>
-							{rows?.map((el) => (
-								<Row key={`user-${rows.indexOf(el)}`} row={el} />
-							))}
+							{rows
+								?.sort((a, b) => new Date(b.date) - new Date(a.date))
+								.map((el) => (
+									<Row key={`user-${rows.indexOf(el)}`} row={el} />
+								))}
 						</TableBody>
 					</Table>
 				</TableContainer>
